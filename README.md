@@ -1,4 +1,4 @@
-# Project Demonstrating Observability For NodeJs Applications 
+# Observability For NodeJs Applications (k8s) 
 
 This is a project demonstrating Observability using :
 
@@ -24,20 +24,20 @@ And basically it demonstrate the best practices for :
 # Running
 
 ## settings
-Install Minikube https://minikube.sigs.k8s.io/docs/start/
-Install Kubectl https://kubernetes.io/es/docs/tasks/tools/
-Install Helm https://helm.sh/docs/intro/install/ 
+* Install Minikube https://minikube.sigs.k8s.io/docs/start/
+* Install Kubectl https://kubernetes.io/es/docs/tasks/tools/
+* Install Helm https://helm.sh/docs/intro/install/ 
 
 Create a k8 cluster 
 ````bash
-minikube start --nodes 2 -p demo
+    minikube start --nodes 2 -p demo
 ````
 
 Minikube Dashboard 
 ````bash
     minikube dashboard -p demo
 ````
-## install prometheus-stack (grafana,prometheus,node-exporter,kube-state-metrics,alertmanager)
+## Install prometheus-stack (grafana,prometheus,node-exporter,kube-state-metrics,alertmanager)
 ````bash
     helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
     helm repo update
@@ -51,7 +51,7 @@ Minikube Dashboard
     kubectl port-forward service/alertmanager-operated 9093:9093 -n observability
 ````
 
-## install Mongodb
+## Install Mongodb
 ````bash
     helm repo add mongodb https://mongodb.github.io/helm-charts
     helm install community-operator mongodb/community-operator --namespace mongodb --create-namespace
@@ -62,14 +62,14 @@ Minikube Dashboard
 
 ````
 
-## install Mongodb exporter
+## Install Mongodb exporter
 ````bash
     helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
     helm install mongo-exporter prometheus-community/prometheus-mongodb-exporter --values mongodb/exporter/values.yaml --namespace mongodb
     kubectl port-forward services/mongo-exporter-prometheus-mongodb-exporter  9216 -n mongodb
     Dashboard: https://grafana.com/grafana/dashboards/7353-mongodb-overview/
 ````
-## deploy application
+## Deploy application
 ````bash
     docker build -t  menco92/app:latest app/    #tag of registry
     docker push menco92/app:latest
@@ -78,7 +78,7 @@ Minikube Dashboard
     kubectl port-forward service/api-blogs-svc   3005 -n app
 ````
 
-## deploy loki
+## Deploy loki
 ````bash
     helm repo add grafana https://grafana.github.io/helm-charts
     helm install loki --namespace=observability grafana/loki-stack --values loki/values.yaml
@@ -87,14 +87,14 @@ Minikube Dashboard
 ## Metrics App
     https://grafana.com/grafana/dashboards/12230-node-js-dashboard/ 
     
-## deploy tracing Jaeger
+## Deploy tracing Jaeger
 ````bash
     kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.6.3/cert-manager.yaml
     kubectl create -f https://github.com/jaegertracing/jaeger-operator/releases/download/v1.41.0/jaeger-operator.yaml -n observability 
     kubectl apply -f tracing/jaeger.yaml
     kubectl port-forward service/simplest-query 16686 -n observability
 ````
-## deploy Opentelemetry Collector
+## Deploy Opentelemetry Collector
 ````bash
     kubectl apply -f https://github.com/open-telemetry/opentelemetry-operator/releases/latest/download/opentelemetry-operator.yaml
     kubectl apply -f tracing/collector.yaml
