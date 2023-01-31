@@ -1,0 +1,6 @@
+promtail:
+  enabled: true
+  config:
+    clients:
+      - url: http://loki.observabilidad.svc.cluster.local:3100/loki/api/v1/push
+        tenant_id: 1

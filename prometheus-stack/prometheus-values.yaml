@@ -1,0 +1,48 @@
+namespaceOverride: "observabilidad"
+
+grafana:
+  namespaceOverride: "observabilidad"
+  enabled: true
+  additionalDataSources: 
+  - name: loki
+    access: proxy
+    editable: true
+    orgId: 1
+    type: loki
+    url: http://loki.observabilidad.svc:3100
+    version: 1
+  - name: tempo
+    access: proxy
+    editable: true
+    orgId: 1
+    type: tempo
+    url: http://tracing-tempo.observabilidad.svc:3100
+    version: 1
+  
+
+kube-state-metrics:
+  namespaceOverride: "observabilidad"
+kubeStateMetrics:
+  enabled: true
+
+nodeExporter:
+  enabled: true
+prometheus-node-exporter:
+  namespaceOverride: "observabilidad"
+
+prometheus:
+  enabled: true
+  prometheusSpec:
+    additionalScrapeConfigs:
+      - job_name: mongodb
+        scrape_interval: 15s
+        scheme: http
+        metrics_path: /metrics
+        static_configs:
+          - targets: ['mongo-exporter-prometheus-mongodb-exporter.mongodb.svc.cluster.local:9216']
+      - job_name: api-blogs
+        scrape_interval: 15s
+        scheme: http
+        metrics_path: /metrics
+        static_configs:
+          - targets: ['api-blogs-svc.app.svc.cluster.local:3005']

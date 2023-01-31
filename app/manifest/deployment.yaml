@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-blogs
+  namespace: app
+  labels:
+    app: api-blogs
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-blogs
+  template:
+    metadata:
+      labels:
+        app: api-blogs
+      annotations:
+        sidecar.opentelemetry.io/inject: "true" # CORRECT
+    spec:
+      containers:
+        - name: api-blogs
+          image: menco92/app:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: OTEL_SERVICE_NAME	
+              value: api-blogs
+            - name: OTEL_RESOURCE_ATTRIBUTES	
+              value: "app=api-blogs"
+            
+            - name: MONGODB_URI
+              value: "mongodb://admin:admin1234@demo-mongodb-0.demo-mongodb-svc.mongodb.svc.cluster.local:27017,demo-mongodb-1.demo-mongodb-svc.mongodb.svc.cluster.local:27017/admin?replicaSet=demo-mongodb&ssl=false"
+          imagePullPolicy: Always

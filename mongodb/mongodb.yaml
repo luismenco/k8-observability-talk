@@ -1,0 +1,65 @@
+---
+apiVersion: mongodbcommunity.mongodb.com/v1
+kind: MongoDBCommunity
+metadata:
+  name: demo-mongodb
+  namespace: mongodb
+spec:
+  members: 2
+  type: ReplicaSet
+  version: "4.4.0"
+  security:
+    authentication:
+      modes: ["SCRAM-SHA-1", "SCRAM-SHA-256"]
+  users:
+    - name: admin
+      db: admin
+      passwordSecretRef: # a reference to the secret that will be used to generate the user's password
+        name: admin-password
+      roles:
+        - name: clusterAdmin
+          db: admin
+        - name: userAdminAnyDatabase
+          db: admin
+        - name: readWrite
+          db: admin
+        - name: readWrite
+          db: test
+      scramCredentialsSecretName: my-scram-admin
+    - name: monitor
+      db: admin
+      passwordSecretRef: # a reference to the secret that will be used to generate the user's password
+        name: admin-password
+      roles:
+        - name: clusterMonitor
+          db: admin
+        - name: read
+          db: local
+      scramCredentialsSecretName: my-scram-monitor
+  statefulSet:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: mongod
+              securityContext:
+                runAsNonRoot: false
+                runAsUser: 0
+                runAsGroup: 0
+            - name: mongodb-agent
+              securityContext:
+                runAsNonRoot: false
+                runAsUser: 0
+                runAsGroup: 0
+
+# the user credentials will be generated from this secret
+# once the credentials are generated, this secret is no longer required
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: admin-password
+  namespace: mongodb
+type: Opaque
+stringData:
+  password: admin1234

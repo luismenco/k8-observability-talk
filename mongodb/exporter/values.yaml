@@ -1,0 +1,14 @@
+mongodb:
+  uri: "mongodb://admin:admin1234@demo-mongodb-0.demo-mongodb-svc.mongodb.svc.cluster.local:27017,demo-mongodb-1.demo-mongodb-svc.mongodb.svc.cluster.local:27017/admin?replicaSet=demo-mongodb&ssl=false"
+serviceMonitor:
+  enabled: true
+image:
+  pullPolicy: IfNotPresent
+  repository: ssheehy/mongodb-exporter
+  tag: 0.10.0
+extraArgs:
+- --collect.collection
+- --collect.database
+- --collect.indexusage
+- --collect.topmetrics
+- --collect.connpoolstats
