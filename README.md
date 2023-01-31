@@ -1,4 +1,4 @@
-# Project Demonstrating Observability For NodeJs Applications 
+# Observability For NodeJs Applications (k8s) 
 
 This is a project demonstrating Observability using :
 
