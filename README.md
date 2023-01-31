@@ -37,7 +37,7 @@ Minikube Dashboard
 ````bash
     minikube dashboard -p demo
 ````
-## install prometheus-stack (grafana,prometheus,node-exporter,kube-state-metrics,alertmanager)
+## Install prometheus-stack (grafana,prometheus,node-exporter,kube-state-metrics,alertmanager)
 ````bash
     helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
     helm repo update
