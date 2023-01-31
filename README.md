@@ -30,7 +30,7 @@ And basically it demonstrate the best practices for :
 
 Create a k8 cluster 
 ````bash
-minikube start --nodes 2 -p demo
+    minikube start --nodes 2 -p demo
 ````
 
 Minikube Dashboard 
