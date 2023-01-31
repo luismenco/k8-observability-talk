@@ -24,18 +24,10 @@ spec:
         - name: readWrite
           db: admin
         - name: readWrite
-          db: test
-      scramCredentialsSecretName: my-scram-admin
-    - name: monitor
-      db: admin
-      passwordSecretRef: # a reference to the secret that will be used to generate the user's password
-        name: admin-password
-      roles:
+          db: local
         - name: clusterMonitor
           db: admin
-        - name: read
-          db: local
-      scramCredentialsSecretName: my-scram-monitor
+      scramCredentialsSecretName: my-scram-admin
   statefulSet:
     spec:
       template:
