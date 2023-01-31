@@ -24,9 +24,9 @@ And basically it demonstrate the best practices for :
 # Running
 
 ## settings
-Install Minikube https://minikube.sigs.k8s.io/docs/start/
-Install Kubectl https://kubernetes.io/es/docs/tasks/tools/
-Install Helm https://helm.sh/docs/intro/install/ 
+* Install Minikube https://minikube.sigs.k8s.io/docs/start/
+* Install Kubectl https://kubernetes.io/es/docs/tasks/tools/
+* Install Helm https://helm.sh/docs/intro/install/ 
 
 Create a k8 cluster 
 ````bash
