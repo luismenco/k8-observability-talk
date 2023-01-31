@@ -31,7 +31,7 @@ app.get("/",(req,res) => res.json({
 mongoose.connect(
   // process.env.MONGODB_URI || "mongodb://admin:admin1234@localhost:27017/admin?connectTimeoutMS=10000&authSource=admin&authMechanism=SCRAM-SHA-256&directConnection=true&replicaSet=demo-mongodb&readPreference=secondaryPreferred&w=majority",
 
-  process.env.MONGODB_URI || "mongodb://localhost:27017/admin?connectTimeoutMS=10000&authSource=admin&directConnection=true&replicaSet=demo-mongodb&readPreference=secondaryPreferred&w=majority",
+  process.env.MONGODB_URI || "mongodb://admin:admin1234@localhost:27018/admin?connectTimeoutMS=10000&authSource=admin&authMechanism=SCRAM-SHA-256&directConnection=false&replicaSet=demo-mongodb",
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,

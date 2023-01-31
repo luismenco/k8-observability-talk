@@ -1,7 +1,7 @@
-namespaceOverride: "observabilidad"
+namespaceOverride: "observability"
 
 grafana:
-  namespaceOverride: "observabilidad"
+  namespaceOverride: "observability"
   enabled: true
   additionalDataSources: 
   - name: loki
@@ -9,26 +9,26 @@ grafana:
     editable: true
     orgId: 1
     type: loki
-    url: http://loki.observabilidad.svc:3100
+    url: http://loki.observability.svc:3100
     version: 1
   - name: tempo
     access: proxy
     editable: true
     orgId: 1
     type: tempo
-    url: http://tracing-tempo.observabilidad.svc:3100
+    url: http://tracing-tempo.observability.svc:3100
     version: 1
   
 
 kube-state-metrics:
-  namespaceOverride: "observabilidad"
+  namespaceOverride: "observability"
 kubeStateMetrics:
   enabled: true
 
 nodeExporter:
   enabled: true
 prometheus-node-exporter:
-  namespaceOverride: "observabilidad"
+  namespaceOverride: "observability"
 
 prometheus:
   enabled: true

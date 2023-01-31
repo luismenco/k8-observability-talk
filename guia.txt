@@ -1,0 +1,132 @@
+Nota: plantear un diagrma de arquitectura
+
+
+instalar minikube 
+https://minikube.sigs.k8s.io/docs/start/
+
+instalar kubectl
+instalar helm  
+
+############crear un cluster con 2 nodos.############
+
+minikube start --nodes 2 -p demo
+minikube profile list 
+minikube start -p demo   
+minikube stop -p demo
+minikube dashboard -p demo 
+
+kubectl get nodes
+kubectl get all --all-namespaces
+
+
+############instalar prometheus stack#####################
+
+grafana, prometheus, kube state metrics, alertmanager
+     https://github.com/prometheus-community
+Ref: https://github.com/prometheus-community/helm-charts 
+
+
+
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
+helm repo ls
+kubectl create namespace observability
+
+helm install prometheus-stack prometheus-community/kube-prometheus-stack --values prometheus-stack/prometheus-values.yaml
+helm upgrade prometheus-stack prometheus-community/kube-prometheus-stack --values prometheus-stack/prometheus-values.yaml
+
+Nota: identificar dashboard claves cluster,nodos,pod, recursos
+grafana:
+     kubectl port-forward service/prometheus-stack-grafana 3000:80 -n observability
+     username: admin
+     pass:     prom-operator
+
+prometheus:
+      kubectl port-forward service/prometheus-stack-kube-prom-prometheus 9090:9090 -n observability
+
+alertmanager:
+    kubectl port-forward service/alertmanager-operated 9093:9093 -n observability
+
+
+BD  Mongo-db:
+    Doc: https://github.com/mongodb/mongodb-kubernetes-operator
+
+    helm install community-operator mongodb/community-operator --namespace mongodb --create-namespace
+    kubectl apply -f mongodb/mongodb.yaml
+    kubectl get pods -n mongodb
+    kubectl get secret demo-mongodb-admin-admin -n mongodb -o json | jq -r '.data | with_entries(.value |= @base64d)'
+    kubectl port-forward services/demo-mongodb-svc 27017 -n mongodb
+    kubectl exec -it demo-mongodb-1 -c mongod -n mongodb -- mongo mongodb://admin:admin1234@demo-mongodb-1.demo-mongodb-svc.mongodb.svc.cluster.local:27017 --username "admin" --password "admin1234"
+
+     
+explicar como monitorearlo pero tener encuenta el datasource y aclarar que es pago
+Mongo db exporter:
+
+    helm install mongo-exporter prometheus-community/prometheus-mongodb-exporter --values mongodb/exporter/values.yaml --namespace mongodb
+    kubectl port-forward services/mongo-exporter-prometheus-mongodb-exporter  9216 -n mongodb
+    https://grafana.com/grafana/dashboards/2583-mongodb/
+     https://grafana.com/grafana/dashboards/7353-mongodb-overview/
+    helm upgrade mongo-exporter prometheus-community/prometheus-mongodb-exporter --values mongodb/exporter/values.yaml --namespace mongodb
+
+
+deploy application
+    docker build -t  menco92/app:latest app/ 
+    docker push menco92/app:latest
+    kubectl create namespace app
+    kubectl delete -f app/manifest
+    kubectl apply -f app/manifest
+    kubectl port-forward service/api-blogs-svc   3005 -n app
+    create script para guardar blogs 
+
+deploy loki
+    datasource : http://loki:3100
+    https://grafana.com/docs/loki/latest/installation/helm/install-scalable/
+    https://github.com/grafana/helm-charts
+    helm repo add grafana https://grafana.github.io/helm-charts
+    helm install loki --namespace=observability grafana/loki-stack --values loki/values.yaml
+    https://grafana.com/grafana/dashboards/13186-loki-dashboard/
+
+    {app="backend-node"}|="error"
+    rate({app="backend-node"}|="error"[1m])
+    count_over_time({app="backend-node"}[1m])
+
+    pending: insert logs in application
+    explorar dashboard loki metrics of logs 
+
+    https://grafana.com/docs/loki/latest/logql/
+    
+    ab -n 1000 -c 100 http://localhost:3005/api/blogs/
+    ab -n 1000 -c 100 -p app/requests/bodyerror.json -T application/json -rk http://localhost:3005/api/blogs/
+    ab -n 1000 -c 100 -p app/requests/bodyok.json -T application/json -rk http://localhost:3005/api/blogs/
+
+Metrics aplication 
+    https://www.npmjs.com/package/prometheus-api-metrics
+    https://grafana.com/grafana/dashboards/12230-node-js-dashboard/
+
+
+tracing 
+https://www.jaegertracing.io/docs/1.41/operator/
+
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.6.3/cert-manager.yaml
+kubectl create -f https://github.com/jaegertracing/jaeger-operator/releases/download/v1.41.0/jaeger-operator.yaml -n observability # <2>
+kubectl apply -f tracing/jaeger.yaml
+kubectl port-forward service/simplest-query 16686 -n observability
+
+opentelemtry collector 
+https://github.com/open-telemetry/opentelemetry-operator#opentelemetry-auto-instrumentation-injection
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.11.0/cert-manager.yaml
+kubectl apply -f https://github.com/open-telemetry/opentelemetry-operator/releases/latest/download/opentelemetry-operator.yaml
+kubectl apply -f tracing/collector.yaml
+
+
+
+
+
+
+
+
+
+
+
+
+

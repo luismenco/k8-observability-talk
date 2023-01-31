@@ -1,5 +1,5 @@
 mongodb:
-  uri: "mongodb://admin:admin1234@demo-mongodb-0.demo-mongodb-svc.mongodb.svc.cluster.local:27017,demo-mongodb-1.demo-mongodb-svc.mongodb.svc.cluster.local:27017/admin?replicaSet=demo-mongodb&ssl=false"
+  uri: "mongodb://monitor:admin1234@demo-mongodb-0.demo-mongodb-svc.mongodb.svc.cluster.local:27017,demo-mongodb-1.demo-mongodb-svc.mongodb.svc.cluster.local:27017/admin?replicaSet=demo-mongodb&ssl=false"
 serviceMonitor:
   enabled: true
 image:

@@ -22,7 +22,7 @@ spec:
 
     exporters:
       otlp:
-        endpoint: "tracing-tempo.observabilidad.svc:4317"
+        endpoint: "tracing-tempo.observability.svc:4317"
         tls:
           insecure: true
 
