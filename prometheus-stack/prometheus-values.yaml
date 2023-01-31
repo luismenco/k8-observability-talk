@@ -11,13 +11,30 @@ grafana:
     type: loki
     url: http://loki.observability.svc:3100
     version: 1
-  - name: tempo
+    jsonData:
+          maxLines: 1000
+          derivedFields:
+            - datasourceUid: jaeger
+              matcherRegex: "traceId:([A-Za-z0-9]+)"
+              name: TraceID
+              url: '$${__value.raw}'
+  - name: jaeger
     access: proxy
     editable: true
     orgId: 1
-    type: tempo
-    url: http://tracing-tempo.observability.svc:3100
+    type: jaeger
+    url: http://simplest-query.observability.svc:16686
     version: 1
+    jsonData:
+        nodeGraph: 
+          enabled: true
+        tracesToLogs:
+          datasourceUid: 'loki'
+          tags: ['app']
+          spanStartTimeShift: '0s'
+          spanEndTimeShift: '4h'
+          filterByTraceID: true
+          filterBySpanID: true
   
 
 kube-state-metrics:

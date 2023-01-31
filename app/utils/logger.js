@@ -1,7 +1,10 @@
-const { createLogger, transports } = require('winston');
+const { createLogger, transports, format } = require('winston');
 
 const logger = createLogger({
-
+  format: format.combine(
+    format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss:ms' }),
+    format.printf(info => `${info.timestamp} ${info.level}: ${info.message} , traceId:${info.trace_id} , spanId: ${info.span_id} `)
+  ),
   transports: [
     new transports.File({
       filename: './logs/all-logs.log',
